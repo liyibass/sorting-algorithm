@@ -5,11 +5,13 @@ import DiagramBar from "../DiagramBar/DiagramBar.component";
 import {
   selectionSortAnimations,
   bubbleSortAnimations,
+  insertionSortAnimations,
 } from "../../sortingAlgorithm/sortingAlgorithm";
 
 function SortingVisualizer() {
   const [Diagram, setDiagram] = useState([]);
-
+  const [resultDiagram, setResultDiagram] = useState([]);
+  const EXECUDE_TIME_INTERVAL = 10;
   useEffect(() => {
     resetDiagram();
   }, []);
@@ -24,54 +26,78 @@ function SortingVisualizer() {
     }
 
     setDiagram(DiagramArray);
+    setResultDiagram([]);
   };
 
   const animationHandler = (animations) => {
     // 取得所有bar
-    const allArrayBars = document.getElementsByClassName("DiagramBar");
-
+    const allArrayBars = document.querySelectorAll(".DiagramBar");
     // 依序將animation pair上色並交換高度
     for (let i = 0; i < animations.length; i++) {
       const [barOneIdx, barTwoIdx] = animations[i];
       const barOneStyle = allArrayBars[barOneIdx].style;
       const barTwoStyle = allArrayBars[barTwoIdx].style;
+
       setTimeout(() => {
         // 上色
         barOneStyle.backgroundColor = "red";
         barTwoStyle.backgroundColor = "red";
         // 交換高度
-        const temp = barTwoStyle.height;
-        barTwoStyle.height = barOneStyle.height;
-        barOneStyle.height = temp;
-      }, i * 10);
+        [barOneStyle.height, barTwoStyle.height] = [
+          barTwoStyle.height,
+          barOneStyle.height,
+        ];
+      }, i * EXECUDE_TIME_INTERVAL);
 
       setTimeout(() => {
         // 上色過後立即還原顏色
         barOneStyle.backgroundColor = "#4d88e0";
         barTwoStyle.backgroundColor = "#4d88e0";
-      }, (i + 1) * 10);
+      }, (i + 1) * EXECUDE_TIME_INTERVAL);
     }
   };
 
   const selectionSortHandler = () => {
-    const animations = selectionSortAnimations(Diagram);
-    animationHandler(animations);
+    const copyDiagram = Diagram.slice();
+    const result = selectionSortAnimations(copyDiagram);
+    setResultDiagram(result.Array);
+    animationHandler(result.animations);
   };
 
   const bubbleSortHandler = () => {
-    const animations = bubbleSortAnimations(Diagram);
-    animationHandler(animations);
+    const copyDiagram = Diagram.slice();
+    const result = bubbleSortAnimations(copyDiagram);
+    setResultDiagram(result.Array);
+    animationHandler(result.animations);
   };
 
+  const insertionSortHandler = () => {
+    const copyDiagram = Diagram.slice();
+    const result = insertionSortAnimations(copyDiagram);
+    setResultDiagram(result.Array);
+    animationHandler(result.animations);
+  };
+
+  console.log(window.innerHeight);
   return (
-    <div className="SortingVisualizer">
+    <div
+      className="SortingVisualizer"
+      style={{ height: `${window.innerHeight}px` }}
+    >
       <div className="controlBar">
         <button onClick={() => resetDiagram()}>Reset</button>
         <button onClick={() => selectionSortHandler()}>Selection Sort</button>
         <button onClick={() => bubbleSortHandler()}>Bubble Sort</button>
+        <button onClick={() => insertionSortHandler()}>insertion Sort</button>
       </div>
       <div className="DiagramContainer">
         {Diagram.map((bar, index) => {
+          return <DiagramBar key={index} value={bar} />;
+        })}
+      </div>
+
+      <div className="DiagramContainer sortResult">
+        {resultDiagram.map((bar, index) => {
           return <DiagramBar key={index} value={bar} />;
         })}
       </div>
