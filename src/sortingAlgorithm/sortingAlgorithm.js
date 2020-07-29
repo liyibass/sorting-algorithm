@@ -1,26 +1,40 @@
-export const selectionSortAnimations = (arr) => {
+export const selectionSortAnimations = (Array) => {
   const animations = [];
-  console.log("Proceed");
-  const length = arr.length;
 
-  // 有幾個元素，就要找幾輪的最小值
-  // 這邊的 i 代表 i 以前的元素都排序好了
-  for (let i = 0; i < length; i++) {
-    // 先預設第一個是最小的
-    let min = arr[i];
+  for (let i = 0; i < Array.length; i++) {
+    // 先假設第一個是最小值
+    let min = Array[i];
     let minIndex = i;
 
-    // 從還沒排好的元素開始找最小值
-    for (let j = i; j < length; j++) {
-      if (arr[j] < min) {
-        min = arr[j];
+    // 從第二個開始比對
+    // 如果遇到更小的目標 就把目標丟到min中 並記下他的index
+    for (let j = i + 1; j < Array.length; j++) {
+      if (Array[j] < min) {
+        min = Array[j];
         minIndex = j;
       }
     }
-
-    // ES6 的用法，交換兩個數值
-    [arr[minIndex], arr[i]] = [arr[i], arr[minIndex]];
+    // 第一輪比對完後 將min跟Array首項交換數值
+    [Array[i], Array[minIndex]] = [Array[minIndex], Array[i]];
     animations.push([i, minIndex]);
   }
+  return animations;
+};
+
+export const bubbleSortAnimations = (Array) => {
+  const animations = [];
+
+  // 總數Array.length 一共跑Array.length輪
+  for (let i = 0; i < Array.length; i++) {
+    // 每一輪會兩兩比對總數-1次（總數減1）
+    // 每一輪又會比上一輪少比一次（總數減去i）
+    for (let j = 0; j < Array.length - i - 1; j++) {
+      if (Array[j] > Array[j + 1]) {
+        [Array[j], Array[j + 1]] = [Array[j + 1], Array[j]];
+        animations.push([j, j + 1]);
+      }
+    }
+  }
+
   return animations;
 };

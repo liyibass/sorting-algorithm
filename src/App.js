@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Homepage from "./pages/homepage/homepage.component";
 import "./styles/base/overall.scss";
 import SortingVisualizer from "./components/SortingVisualizer/SortingVisualizer.component";
 

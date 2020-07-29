@@ -2,10 +2,17 @@ import React, { useState, useEffect } from "react";
 import "./SortingVisualizer.style.scss";
 import DiagramBar from "../DiagramBar/DiagramBar.component";
 
-import { selectionSortAnimations } from "../../sortingAlgorithm/sortingAlgorithm";
+import {
+  selectionSortAnimations,
+  bubbleSortAnimations,
+} from "../../sortingAlgorithm/sortingAlgorithm";
 
 function SortingVisualizer() {
   const [Diagram, setDiagram] = useState([]);
+
+  useEffect(() => {
+    resetDiagram();
+  }, []);
 
   const resetDiagram = () => {
     const screenWidth = document.body.clientWidth;
@@ -19,14 +26,11 @@ function SortingVisualizer() {
     setDiagram(DiagramArray);
   };
 
-  useEffect(() => {
-    resetDiagram();
-  }, []);
-
-  const selectionSortHandler = () => {
-    const animations = selectionSortAnimations(Diagram);
+  const animationHandler = (animations) => {
+    // 取得所有bar
     const allArrayBars = document.getElementsByClassName("DiagramBar");
 
+    // 依序將animation pair上色並交換高度
     for (let i = 0; i < animations.length; i++) {
       const [barOneIdx, barTwoIdx] = animations[i];
       const barOneStyle = allArrayBars[barOneIdx].style;
@@ -42,15 +46,21 @@ function SortingVisualizer() {
       }, i * 10);
 
       setTimeout(() => {
+        // 上色過後立即還原顏色
         barOneStyle.backgroundColor = "#4d88e0";
         barTwoStyle.backgroundColor = "#4d88e0";
       }, (i + 1) * 10);
     }
   };
-  const swapTwoBars = (animationPairIndex, allArrayBars) => {
-    const [barOneIdx, barTwoIdx] = animationPairIndex;
-    const barOneStyle = allArrayBars[barOneIdx].style;
-    const barTwoStyle = allArrayBars[barTwoIdx].style;
+
+  const selectionSortHandler = () => {
+    const animations = selectionSortAnimations(Diagram);
+    animationHandler(animations);
+  };
+
+  const bubbleSortHandler = () => {
+    const animations = bubbleSortAnimations(Diagram);
+    animationHandler(animations);
   };
 
   return (
@@ -58,6 +68,7 @@ function SortingVisualizer() {
       <div className="controlBar">
         <button onClick={() => resetDiagram()}>Reset</button>
         <button onClick={() => selectionSortHandler()}>Selection Sort</button>
+        <button onClick={() => bubbleSortHandler()}>Bubble Sort</button>
       </div>
       <div className="DiagramContainer">
         {Diagram.map((bar, index) => {
