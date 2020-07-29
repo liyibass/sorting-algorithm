@@ -1,3 +1,4 @@
+// ----------------------------Selection Sort----------------------------
 export const selectionSortAnimations = (Array) => {
   const animations = [];
 
@@ -23,7 +24,7 @@ export const selectionSortAnimations = (Array) => {
 
   return { Array, animations };
 };
-
+// ----------------------------Bubble Sort----------------------------
 export const bubbleSortAnimations = (Array) => {
   const animations = [];
 
@@ -41,7 +42,7 @@ export const bubbleSortAnimations = (Array) => {
 
   return { Array, animations };
 };
-
+// ----------------------------Insertion Sort----------------------------
 export const insertionSortAnimations = (Array) => {
   const animations = [];
 
