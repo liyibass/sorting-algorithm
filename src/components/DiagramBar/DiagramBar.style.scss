@@ -1,0 +1,10 @@
+@import "../../styles/base/variables.scss";
+@import "../../styles/base/responsiveMixin.scss";
+
+.DiagramBar {
+  background: #4d88e0;
+  width: 6px;
+  margin: 0 1px;
+  @include atSmall {
+  }
+}
