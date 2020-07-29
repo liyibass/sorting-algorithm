@@ -73,16 +73,16 @@ function SortingVisualizer() {
   // ----------------------------Animation Handler----------------------------
 
   function animationHandler(animations) {
-    // 取得所有bar
+    // 取得所有bar element array
     const allArrayBars = document.querySelectorAll(".DiagramBar");
 
-    // 依序將animation pair上色並交換高度
+    // 一個個將animation pair上色並交換高度
     for (let i = 0; i < animations.length; i++) {
       const [barOneIdx, barTwoIdx] = animations[i];
       const barOneStyle = allArrayBars[barOneIdx].style;
       const barTwoStyle = allArrayBars[barTwoIdx].style;
 
-      // 啟動setTimeout的同時將setTimeout的id放至timeouts中
+      // 啟動setTimeout的同時，將setTimeout的id放至timeouts中
       timeouts.push(
         window.setTimeout(() => {
           // 上色
