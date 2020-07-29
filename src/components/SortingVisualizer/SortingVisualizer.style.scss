@@ -46,27 +46,29 @@
   .promptContainer {
     position: absolute;
     z-index: 3;
-    top: 20%;
+    top: 30%;
+
     left: 15%;
     opacity: 0;
+    // background-color: red;
 
     h1,
     h2 {
-      margin: 50px 0;
+      margin: 20px 0;
     }
 
     &-showPrompt {
-      opacity: 0.5;
-      transition: opacity 2s ease;
+      opacity: 0.35;
+      transition: opacity 3s ease;
     }
 
     @include atMedium {
-      top: 15%;
+      top: 25%;
       left: 80px;
     }
 
     @include atSmall {
-      top: 10%;
+      top: 20%;
       left: 22px;
     }
   }

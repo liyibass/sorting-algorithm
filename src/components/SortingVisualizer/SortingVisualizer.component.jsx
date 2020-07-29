@@ -12,7 +12,7 @@ function SortingVisualizer() {
   const [Diagram, setDiagram] = useState([]); //拿來顯示的Diagram
   const [resultDiagram, setResultDiagram] = useState([]); //背景顯示結果的Diagram
   const [prompt, setPrompt] = useState({});
-  const EXECUDE_TIME_INTERVAL = 6; //步驟執行時間
+  const EXECUDE_TIME_INTERVAL = 8; //步驟執行時間
   const [timeouts, setTimeouts] = useState([]); // 儲存動畫的timeouts id，讓我們可以在reset時可以停止動畫
 
   // 初始創建
