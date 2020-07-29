@@ -96,8 +96,6 @@ function SortingVisualizer() {
     setDiagram([]);
     setResultDiagram([]);
   };
-  console.log("rerender");
-  console.log("");
   return (
     <div
       className="SortingVisualizer"
