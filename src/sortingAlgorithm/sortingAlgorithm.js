@@ -6,7 +6,6 @@ export const selectionSortAnimations = (Array) => {
     // 先假設第一個是最小值
     let min = Array[i];
     let minIndex = i;
-    animations.push([minIndex, minIndex]);
 
     // 從第二個開始比對
     // 如果遇到更小的目標 就把目標丟到min中 並記下他的index
@@ -15,6 +14,8 @@ export const selectionSortAnimations = (Array) => {
         min = Array[j];
         minIndex = j;
         animations.push([minIndex, minIndex]);
+      } else {
+        animations.push([j, j]);
       }
     }
     // 第一輪比對完後 將min跟Array首項交換數值
