@@ -7,6 +7,7 @@ function ControllBar({
   selectionSortHandler,
   bubbleSortHandler,
   insertionSortHandler,
+  mergeSortHandler,
 }) {
   const [ctrlBarState, setCtrlBarState] = useState(1); //0:generate 1:algorithm、generate 2:clear
 
@@ -51,6 +52,15 @@ function ControllBar({
             }}
           >
             insertion Sort
+          </button>
+
+          <button
+            onClick={() => {
+              setCtrlBarState(2);
+              mergeSortHandler();
+            }}
+          >
+            Merge Sort
           </button>
         </div>
       );
