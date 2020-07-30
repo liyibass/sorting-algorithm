@@ -10,19 +10,6 @@
   align-items: center;
   justify-content: end;
 
-  .controlBar {
-    height: 10%;
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-
-    button {
-      height: 30px;
-    }
-  }
   .DiagramContainer {
     // border: 2px gray solid;
     margin: auto;

@@ -7,13 +7,14 @@ import {
   bubbleSortAnimations,
   insertionSortAnimations,
 } from "../../sortingAlgorithm/sortingAlgorithm";
+import ControllBar from "../ControllBar/ControllBar.component";
 
 function SortingVisualizer() {
   const [Diagram, setDiagram] = useState([]); //拿來顯示的Diagram
   const [resultDiagram, setResultDiagram] = useState([]); //背景顯示結果的Diagram
   const [prompt, setPrompt] = useState({});
+  const [timeouts, setTimeouts] = useState([]); // 儲存動畫的setTimeouts id，讓我們可以在reset時可以停止動畫
   const EXECUDE_TIME_INTERVAL = 8; //步驟執行時間
-  const [timeouts, setTimeouts] = useState([]); // 儲存動畫的timeouts id，讓我們可以在reset時可以停止動畫
 
   // 初始創建
   useEffect(() => {
@@ -23,12 +24,6 @@ function SortingVisualizer() {
   // ----------------------------Initial Control----------------------------
 
   const generateDiagram = () => {
-    // 停止所有的setTimeout
-    for (var i = 0; i < timeouts.length; i++) {
-      clearTimeout(timeouts[i]);
-    }
-    setTimeouts([]);
-
     // 計算螢幕寬度以及bar數量，依此建立DiagramArray
     const screenWidth = document.body.clientWidth;
     const barNumber = Math.floor(screenWidth / 10);
@@ -36,21 +31,44 @@ function SortingVisualizer() {
     for (let i = 0; i < barNumber; i++) {
       DiagramArray[i] = Math.floor(Math.random() * 100);
     }
-    const copyDiagram = DiagramArray.slice();
-    const result = insertionSortAnimations(copyDiagram);
-    setResultDiagram(result.Array);
-
     // 更新顯示畫面
     setDiagram(DiagramArray);
     setResultDiagram([]);
   };
 
+  useEffect(() => {
+    // 多次sort+re-generate後 bar的style會小概率觸發丟失bug
+    // 所以在每一次Diagram更新時 都需要重置bar的style確保數值一致
+    const allArrayBars = document.querySelectorAll(".DiagramBar");
+    allArrayBars.forEach((bar, index) => {
+      // 如果數值不一致，就重新賦予
+      if (`${Diagram[index]}%` !== bar.style.height) {
+        // console.log(false);
+        bar.style.height = `${Diagram[index]}%`;
+      } else {
+        // console.log(true);
+      }
+
+      // 順便重置顏色
+      bar.style.backgroundColor = "#4d88e0";
+    });
+  }, [Diagram]);
+
   const clearDiagram = () => {
+    // 停止所有的setTimeout
+    for (var i = 0; i < timeouts.length; i++) {
+      clearTimeout(timeouts[i]);
+    }
+    setTimeouts([]);
+
+    // 關掉prompt
     const showPrompt = document.querySelector(".promptContainer");
     showPrompt.classList.remove("promptContainer-showPrompt");
+
     setDiagram([]);
     setResultDiagram([]);
     setPrompt({});
+    generateDiagram();
   };
 
   // ----------------------------Algorithm Handler----------------------------
@@ -119,6 +137,7 @@ function SortingVisualizer() {
             barOneStyle.height,
           ];
 
+          // 執行到一半的時候 顯示prompt
           if (i === Math.floor(animations.length / 2)) {
             const showPrompt = document.querySelector(".promptContainer");
             showPrompt.classList.add("promptContainer-showPrompt");
@@ -134,19 +153,20 @@ function SortingVisualizer() {
       );
     }
   }
-  console.log("render");
+
   return (
     <div
       className="SortingVisualizer"
       style={{ height: `${window.innerHeight}px` }}
     >
-      <div className="controlBar">
-        <button onClick={() => clearDiagram()}>Clear</button>
-        <button onClick={() => generateDiagram()}>Generate</button>
-        <button onClick={() => selectionSortHandler()}>Selection Sort</button>
-        <button onClick={() => bubbleSortHandler()}>Bubble Sort</button>
-        <button onClick={() => insertionSortHandler()}>insertion Sort</button>
-      </div>
+      <ControllBar
+        clearDiagram={clearDiagram}
+        generateDiagram={generateDiagram}
+        selectionSortHandler={selectionSortHandler}
+        bubbleSortHandler={bubbleSortHandler}
+        insertionSortHandler={insertionSortHandler}
+      />
+
       <div className="DiagramContainer">
         {Diagram.map((bar, index) => {
           return <DiagramBar key={index} value={bar} />;
@@ -169,4 +189,4 @@ function SortingVisualizer() {
   );
 }
 
-export default SortingVisualizer;
+export default React.memo(SortingVisualizer);
