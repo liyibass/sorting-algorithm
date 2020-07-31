@@ -75,53 +75,77 @@ export const mergeSortAnimations = (Array) => {
   if (Array.length <= 1) return Array;
   const animations = [];
   const auxiliaryArray = Array.slice();
-  seperateArray(Array, 0, Array.length - 1, auxiliaryArray);
+  seperateArrayThenMerge(Array, auxiliaryArray, 0, Array.length - 1);
+  return { Array, animations };
 
   // 切割
-  function seperateArray(mainArray, startIndex, endIndex, auxiliaryArray) {
+  function seperateArrayThenMerge(
+    mainArray,
+    auxiliaryArray,
+    startIndex,
+    endIndex
+  ) {
     if (startIndex === endIndex) return;
 
     const middleIndex = Math.floor((startIndex + endIndex) / 2);
-    seperateArray(auxiliaryArray, startIndex, middleIndex, mainArray);
-    seperateArray(auxiliaryArray, middleIndex + 1, endIndex, mainArray);
-    doMerge(mainArray, startIndex, middleIndex, endIndex, auxiliaryArray);
+    seperateArrayThenMerge(auxiliaryArray, mainArray, startIndex, middleIndex);
+    seperateArrayThenMerge(
+      auxiliaryArray,
+      mainArray,
+      middleIndex + 1,
+      endIndex
+    );
+    mergeHandler(mainArray, auxiliaryArray, startIndex, middleIndex, endIndex);
   }
 
   // 合併
-  function doMerge(
+  function mergeHandler(
     mainArray,
+    auxiliaryArray,
     startIndex,
     middleIndex,
-    endIndex,
-    auxiliaryArray
+    endIndex
   ) {
-    let k = startIndex; //0
-    let i = startIndex;
-    let j = middleIndex + 1;
+    let sortedResultIndex = startIndex;
+    let i = startIndex; //leftIndex
+    let j = middleIndex + 1; //rightIndex
+
     while (i <= middleIndex && j <= endIndex) {
       animations.push([i, j]);
       animations.push([i, j]);
+
       if (auxiliaryArray[i].value <= auxiliaryArray[j].value) {
-        animations.push([k, auxiliaryArray[i]]);
-        mainArray[k++] = auxiliaryArray[i++];
+        mainArray[sortedResultIndex] = auxiliaryArray[i];
+        animations.push([sortedResultIndex, auxiliaryArray[i]]);
+
+        sortedResultIndex++;
+        i++;
       } else {
-        animations.push([k, auxiliaryArray[j]]);
-        mainArray[k++] = auxiliaryArray[j++];
+        mainArray[sortedResultIndex] = auxiliaryArray[j];
+        animations.push([sortedResultIndex, auxiliaryArray[j]]);
+
+        sortedResultIndex++;
+        j++;
       }
     }
     while (i <= middleIndex) {
       animations.push([i, i]);
       animations.push([i, i]);
-      animations.push([k, auxiliaryArray[i]]);
-      mainArray[k++] = auxiliaryArray[i++];
+
+      mainArray[sortedResultIndex] = auxiliaryArray[i];
+      animations.push([sortedResultIndex, auxiliaryArray[i]]);
+      sortedResultIndex++;
+      i++;
     }
     while (j <= endIndex) {
       animations.push([j, j]);
       animations.push([j, j]);
-      animations.push([k, auxiliaryArray[j]]);
-      mainArray[k++] = auxiliaryArray[j++];
+
+      mainArray[sortedResultIndex] = auxiliaryArray[j];
+      animations.push([sortedResultIndex, auxiliaryArray[j]]);
+
+      sortedResultIndex++;
+      j++;
     }
   }
-
-  return { Array, animations };
 };

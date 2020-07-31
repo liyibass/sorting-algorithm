@@ -194,7 +194,7 @@ function SortingVisualizer() {
             barOneStyle.backgroundColor = color;
             barTwoStyle.backgroundColor = color;
 
-            // 執行到一半的時候 顯示prompt
+            // 執行到後半的時候 顯示prompt
             if (i === Math.floor(animations.length * 0.75)) {
               const showPrompt = document.querySelector(".promptContainer");
               showPrompt.classList.add("promptContainer-showPrompt");
