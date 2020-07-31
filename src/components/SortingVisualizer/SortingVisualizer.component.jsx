@@ -128,12 +128,12 @@ function SortingVisualizer() {
     const copyBarDiagram = BarDiagram.slice();
     const result = mergeSortAnimations(copyBarDiagram);
     setResultBarDiagram(result.Array);
-    animationHandler(result.animations);
+    mergeSortAnimationHandler(result.animations);
     setPrompt({
       algorithm: "Merge Sort",
-      Best: `Best:O(n)`,
-      Worst: `Worst:O(n${String.fromCharCode(178)})`,
-      Avg: `Avg:O(n${String.fromCharCode(178)})`,
+      Best: `Best:O(n ${String.fromCharCode(0x33d2)} n)`,
+      Worst: `Worst:O(n ${String.fromCharCode(0x33d2)} n)`,
+      Avg: `Avg:O(n ${String.fromCharCode(0x33d2)} n)`,
     });
   };
 
@@ -175,6 +175,43 @@ function SortingVisualizer() {
           barTwoStyle.backgroundColor = "#4d88e0";
         }, (i + 1) * EXECUDE_TIME_INTERVAL)
       );
+    }
+  }
+  function mergeSortAnimationHandler(animations) {
+    const allArrayBars = document.querySelectorAll(".DiagramBar");
+
+    for (let i = 0; i < animations.length; i++) {
+      // if if else、if if else......循環
+      const isColorChange = i % 3 !== 2;
+      if (isColorChange) {
+        const [barOneIdx, barTwoIdx] = animations[i];
+        const barOneStyle = allArrayBars[barOneIdx].style;
+        const barTwoStyle = allArrayBars[barTwoIdx].style;
+        // 第一輪：紅色  第二輪：恢復原來顏色
+        const color = i % 3 === 0 ? "red" : "#4d88e0";
+        timeouts.push(
+          setTimeout(() => {
+            barOneStyle.backgroundColor = color;
+            barTwoStyle.backgroundColor = color;
+
+            // 執行到一半的時候 顯示prompt
+            if (i === Math.floor(animations.length * 0.75)) {
+              const showPrompt = document.querySelector(".promptContainer");
+              showPrompt.classList.add("promptContainer-showPrompt");
+            }
+          }, i * 10)
+        );
+        // 第三輪：覆蓋高度
+      } else {
+        const [barOneIdx, newHeight] = animations[i];
+        const barOneStyle = allArrayBars[barOneIdx].style;
+
+        timeouts.push(
+          setTimeout(() => {
+            barOneStyle.height = `${newHeight.value}%`;
+          }, i * 10)
+        );
+      }
     }
   }
 

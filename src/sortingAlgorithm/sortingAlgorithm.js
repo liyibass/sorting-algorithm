@@ -71,73 +71,57 @@ export const insertionSortAnimations = (Array) => {
 };
 
 // ----------------------------Merge Sort----------------------------
-export const mergeSortAnimations = (arr) => {
+export const mergeSortAnimations = (Array) => {
+  if (Array.length <= 1) return Array;
   const animations = [];
-  const colorAnimations = [];
+  const auxiliaryArray = Array.slice();
+  seperateArray(Array, 0, Array.length - 1, auxiliaryArray);
+
+  // 切割
+  function seperateArray(mainArray, startIndex, endIndex, auxiliaryArray) {
+    if (startIndex === endIndex) return;
+
+    const middleIndex = Math.floor((startIndex + endIndex) / 2);
+    seperateArray(auxiliaryArray, startIndex, middleIndex, mainArray);
+    seperateArray(auxiliaryArray, middleIndex + 1, endIndex, mainArray);
+    doMerge(mainArray, startIndex, middleIndex, endIndex, auxiliaryArray);
+  }
 
   // 合併
-  const merge = (leftArray, rightArray) => {
-    let result = [];
-    let nowIndex = 0,
-      leftIndex = 0,
-      rightIndex = 0;
-    const leftLength = leftArray.length;
-    const rightLength = rightArray.length;
-
-    // 如果左右兩邊都沒抓完，就看誰比較小抓誰
-    while (leftIndex < leftLength && rightIndex < rightLength) {
-      if (leftArray[leftIndex] < rightArray[rightIndex]) {
-        result[nowIndex] = leftArray[leftIndex];
-        nowIndex++;
-        leftIndex++;
+  function doMerge(
+    mainArray,
+    startIndex,
+    middleIndex,
+    endIndex,
+    auxiliaryArray
+  ) {
+    let k = startIndex; //0
+    let i = startIndex;
+    let j = middleIndex + 1;
+    while (i <= middleIndex && j <= endIndex) {
+      animations.push([i, j]);
+      animations.push([i, j]);
+      if (auxiliaryArray[i].value <= auxiliaryArray[j].value) {
+        animations.push([k, auxiliaryArray[i]]);
+        mainArray[k++] = auxiliaryArray[i++];
       } else {
-        result[nowIndex] = rightArray[rightIndex];
-        nowIndex++;
-        rightIndex++;
+        animations.push([k, auxiliaryArray[j]]);
+        mainArray[k++] = auxiliaryArray[j++];
       }
     }
-
-    // 跑到這裡代表左右兩邊 至少其中一邊空了
-    // 如果是左邊沒抓完，全部抓下來
-    while (leftIndex < leftLength) {
-      result[nowIndex] = leftArray[leftIndex];
-      nowIndex++;
-      leftIndex++;
+    while (i <= middleIndex) {
+      animations.push([i, i]);
+      animations.push([i, i]);
+      animations.push([k, auxiliaryArray[i]]);
+      mainArray[k++] = auxiliaryArray[i++];
     }
-
-    // 右邊沒抓完，全部抓下來
-    while (rightIndex < rightLength) {
-      result[nowIndex] = rightArray[rightIndex];
-      nowIndex++;
-      rightIndex++;
+    while (j <= endIndex) {
+      animations.push([j, j]);
+      animations.push([j, j]);
+      animations.push([k, auxiliaryArray[j]]);
+      mainArray[k++] = auxiliaryArray[j++];
     }
-
-    // 把合併好的一個陣列直接傳回去
-    return result;
-  };
-  const _mergeSort = (arr) => {
-    const leftColorArray = [];
-    const rightColorArray = [];
-
-    const length = arr.length;
-    // 如果這一邊只有一個元素 就原物直接返回
-    if (length <= 1) return arr;
-
-    // 切兩半
-    const middle = Math.floor(length / 2);
-    // 分成左邊、右邊Array
-    const leftArray = _mergeSort(arr.slice(0, middle));
-
-    const rightArray = _mergeSort(arr.slice(middle, length));
-    for (let i = middle; i < length; i++) {
-      rightColorArray.push(i);
-    }
-    // 兩者合併丟回去
-    return merge(leftArray, rightArray);
-  };
-  // return _mergeSort(arr);
-
-  let Array = _mergeSort(arr);
+  }
 
   return { Array, animations };
 };
